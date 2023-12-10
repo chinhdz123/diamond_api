@@ -25,6 +25,7 @@ async def detect_diamond_image(file):
         x2,y2,r2 = find_circle(remove_bg_mask_2)
         #cắt lấy hình kim cương
         diamond_image = get_diamond_image(remove_bg_image_2, x2,y2,r2)
+        diamond_image = cv2.resize(diamond_image, (300,300))
         # Convert the processed image to bytes
         retval, img_bytes = cv2.imencode('.jpg', diamond_image)
         content = img_bytes.tobytes()

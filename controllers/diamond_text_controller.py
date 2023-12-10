@@ -16,6 +16,7 @@ async def detect_diamond_text(file):
         best_box = detect_box(image)
 
         cropped_image = crop_image(image, best_box)
+        cropped_image = cv2.resize(cropped_image, (300,100))
         # Convert the processed image to bytes
         retval, img_bytes = cv2.imencode('.jpg', cropped_image)
         content = img_bytes.tobytes()

@@ -6,8 +6,6 @@ from routes.router import api_router
 app = FastAPI()
 
 app.include_router(router=api_router, prefix="/api1")
-
-app.mount("/api1/static", StaticFiles(directory="static"), name="static")
 # Add the following lines to enable CORS
 origins = ["*"]
 
