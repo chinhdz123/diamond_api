@@ -5,6 +5,9 @@ from services.diamond_image_service import *
 from starlette.responses import StreamingResponse
 import io
 from fastapi.responses import JSONResponse
+from PIL import Image, ImageOps
+from io import BytesIO
+
 
 async def detect_diamond_image(file):
     try:
@@ -26,11 +29,14 @@ async def detect_diamond_image(file):
         #cắt lấy hình kim cương
         diamond_image = get_diamond_image(remove_bg_image_2, x2,y2,r2)
         diamond_image = cv2.resize(diamond_image, (300,300))
-        # Convert the processed image to bytes
-        retval, img_bytes = cv2.imencode('.jpg', diamond_image)
-        content = img_bytes.tobytes()
-
-        # Return the processed image as a file response
-        return StreamingResponse(io.BytesIO(content), media_type="image/jpeg")
+        _, encoded_image = cv2.imencode(".jpg", diamond_image)
+        image_bytes = encoded_image.tobytes()
+        diamond_image_pillow = remove(image_bytes)
+        image_bytesio = BytesIO()
+        image_bytesio.write(diamond_image_pillow)  # You can change the format as needed
+        def generate():
+            image_bytes = image_bytesio.getvalue()
+            yield image_bytes
+        return StreamingResponse(generate(), media_type="image/jpeg")
     except Exception as e:
         return JSONResponse(content={"message": str(e)}, status_code=500)
