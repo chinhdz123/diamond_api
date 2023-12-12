@@ -32,7 +32,8 @@ def get_image_box_out_circle(image, x,y,r):
     cv2.rectangle( mask, (x - r , y - r), (x + r , y + r), (255, 255, 255), thickness=-1)
     result = cv2.bitwise_and(image,image, mask =mask)
     cropped_object = result[y-r:y+r, x-r:x+ r]
-    return cropped_object
+    cropped_raw_image = image[y-r:y+r, x-r:x+ r]
+    return cropped_object, cropped_raw_image
 
 def get_diamond_image(image, x,y,r):
     mask = np.zeros(image.shape[:2], dtype="uint8")
