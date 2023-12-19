@@ -9,6 +9,8 @@ from fastapi.responses import JSONResponse
 from PIL import Image, ImageOps
 from io import BytesIO
 from ultralytics import YOLO
+from fastapi import HTTPException
+import traceback
 model = YOLO("model/best.pt")
 
 async def detect_diamond_image(file):
@@ -23,7 +25,7 @@ async def detect_diamond_image(file):
             for box in boxes:
                 box_diamond = box.xyxy[0]
         if box_diamond is not None:
-            x1,y1,x2,y2 =box
+            x1,y1,x2,y2 =box_diamond
             x1,y1,x2,y2 = int(x1)-20,int(y1)-20,int(x2)+20,int(y2)+20
             cropped_object_image = image[y1:y2,x1:x2]
             #remove background
@@ -43,4 +45,7 @@ async def detect_diamond_image(file):
                 yield image_bytes
             return StreamingResponse(generate(), media_type="image/jpeg")
     except Exception as e:
-        return JSONResponse(content={"message": str(e)}, status_code=500)
+        # Capture the traceback
+        traceback_str = traceback.format_exc()
+        # Raise an HTTPException with a custom message and the traceback
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}\n\nTraceback:\n{traceback_str}")
