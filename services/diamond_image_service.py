@@ -3,10 +3,12 @@ from rembg import remove
 import  cv2
 import numpy as np 
 
-def remove_bg(image):
-    remove_bg = remove(image)
-    remove_bg_mask = remove(image, only_mask=True)
-    return remove_bg, remove_bg_mask
+def remove_bg(image, mask= False):
+    if mask:
+        remove_bg = remove(image, only_mask=True)
+    else:
+        remove_bg = remove(image)
+    return remove_bg
 
 def find_circle(image):
 

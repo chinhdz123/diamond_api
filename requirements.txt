@@ -7,3 +7,4 @@ rembg
 uvicorn==0.23.2
 python-multipart==0.0.6
 werkzeug==2.3.6
+ultralytics==8.0.134
